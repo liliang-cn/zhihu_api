@@ -6,33 +6,14 @@ const koaStatic = require("koa-static");
 const koaBody = require("koa-body");
 const error = require("koa-json-error");
 const parameter = require("koa-parameter");
-const mongoose = require("mongoose");
 
 const routing = require("./routes");
-const { connectionStr } = require("./config");
-
-mongoose.connect(
-  connectionStr,
-  { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false },
-  () => {
-    console.log("MongoDB connected");
-  }
-);
-
-mongoose.connection.on("error", console.error);
+const initDB = require("./libs/db");
 
 const app = new Koa();
 
-// app.use(async (ctx, next) => {
-//   try {
-//     await next();
-//   } catch (err) {
-//     ctx.status = err.status || err.statusCode || 500;
-//     ctx.body = {
-//       message: err.message,
-//     };
-//   }
-// });
+initDB();
+
 app.use(koaStatic(path.join(__dirname, "public")));
 app.use(
   error({

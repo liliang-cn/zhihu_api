@@ -11,23 +11,16 @@ const {
   delete: destroy,
   update,
   login,
+  checkUserExist,
+  follow,
+  listFollowing,
+  listFollower,
+  unfollow,
 } = require("../controllers/user");
 
 const router = new Router({
   prefix: "/users",
 });
-
-// const auth = async (ctx, next) => {
-//   const { authorization = "" } = ctx.request.header;
-//   const token = authorization.replace("Bearer ", "");
-//   try {
-//     const user = jwt.verify(token, secret);
-//     ctx.state.user = user;
-//     await next();
-//   } catch (err) {
-//     ctx.throw(401, err.message);
-//   }
-// };
 
 const auth = jwt({
   secret,
@@ -46,5 +39,9 @@ router.post("/", create);
 router.post("/login", login);
 router.patch("/:id", auth, checkOwner, update);
 router.delete("/:id", auth, checkOwner, destroy);
+router.get("/:id/following", listFollowing);
+router.get("/:id/follower", listFollower);
+router.put("/following/:id", auth, checkUserExist, follow);
+router.delete("/following/:id", auth, checkUserExist, unfollow);
 
 module.exports = router;

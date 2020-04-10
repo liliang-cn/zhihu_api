@@ -8,7 +8,14 @@ class UserController {
     ctx.body = await User.find();
   }
   async findById(ctx) {
-    const user = await User.findById(ctx.params.id);
+    // TODO: /users/5e9074ea3c847d13a799a841?fields=
+    const { fields } = ctx.query;
+    const selectFields = fields
+      .split(";")
+      .filter((f) => f)
+      .map((f) => " +" + f)
+      .join("");
+    const user = await User.findById(ctx.params.id).select(selectFields);
     if (!user) {
       ctx.throw(404, "用户不存在");
     }
@@ -43,6 +50,31 @@ class UserController {
         required: false,
       },
       password: { type: "string", required: false },
+      avatar_url: { type: "string", required: false },
+      gender: {
+        type: "string",
+        required: false,
+      },
+      headline: {
+        type: "string",
+        required: false,
+      },
+      locations: {
+        type: "array",
+        itemType: "string",
+        required: false,
+      },
+      business: { type: "string", required: false },
+      employments: {
+        type: "array",
+        itemType: "object",
+        required: false,
+      },
+      educations: {
+        type: "array",
+        itemType: "object",
+        required: false,
+      },
     });
     const user = await User.findByIdAndUpdate(ctx.params.id, ctx.request.body);
     if (!user) {
@@ -86,6 +118,56 @@ class UserController {
     );
 
     ctx.body = { token, name };
+  }
+
+  async listFollowing(ctx) {
+    const user = await User.findById(ctx.params.id)
+      .select("+following")
+      .populate("following");
+    if (!user) {
+      ctx.throw(404, "用户不存在");
+    }
+    ctx.body = user.following;
+  }
+
+  async checkUserExist(ctx, next) {
+    try {
+      const user = await User.findById(ctx.params.id);
+      if (user) {
+        await next();
+      }
+    } catch (err) {
+      ctx.throw(404, "用户不存在!");
+    }
+  }
+
+  async follow(ctx) {
+    const me = await User.findById(ctx.state.user._id).select("+following");
+
+    if (!me.following.map((id) => id.toString()).includes(ctx.params.id)) {
+      me.following.push(ctx.params.id);
+      me.save();
+    }
+
+    ctx.status = 204;
+  }
+
+  async unfollow(ctx) {
+    const me = await User.findById(ctx.state.user._id).select("+following");
+    const index = me.following
+      .map((id) => id.toString())
+      .indexOf(ctx.params.id);
+    if (index > -1) {
+      me.following.splice(index, 1);
+      me.save();
+    }
+
+    ctx.status = 204;
+  }
+
+  async listFollower(ctx) {
+    const users = await User.find({ following: ctx.params.id });
+    ctx.body = users;
   }
 }
 
