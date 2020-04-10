@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  my-mongodb:
+    image: mongo
+    container_name: my-mongodb
+    ports:
+      - 27017:27017
+    volumes:
+      - /home/liliang/db/mongodata:/data/db
