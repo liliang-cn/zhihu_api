@@ -1,6 +1,9 @@
+const path = require("path");
+
 const Koa = require("koa");
 const logger = require("koa-logger");
-const bodyparser = require("koa-bodyparser");
+const koaStatic = require("koa-static");
+const koaBody = require("koa-body");
 const error = require("koa-json-error");
 const parameter = require("koa-parameter");
 const mongoose = require("mongoose");
@@ -30,6 +33,7 @@ const app = new Koa();
 //     };
 //   }
 // });
+app.use(koaStatic(path.join(__dirname, "public")));
 app.use(
   error({
     postFormat: (e, { stack, ...rest }) =>
@@ -37,7 +41,15 @@ app.use(
   })
 );
 app.use(logger());
-app.use(bodyparser());
+app.use(
+  koaBody({
+    multipart: true,
+    formidable: {
+      uploadDir: path.join(__dirname, "/public/uploads"),
+      keepExtensions: true,
+    },
+  })
+);
 app.use(parameter(app));
 
 routing(app);
