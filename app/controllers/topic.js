@@ -1,5 +1,6 @@
 const Topic = require("../models/topics");
 const User = require("../models/users");
+const Question = require("../models/questions");
 
 class TopicController {
   async find(ctx) {
@@ -61,6 +62,10 @@ class TopicController {
     } catch (err) {
       ctx.throw(404, "话题不存在!");
     }
+  }
+  async listQuestions(ctx) {
+    const questions = await Question.find({ topics: ctx.params.id });
+    ctx.body = questions;
   }
 }
 
