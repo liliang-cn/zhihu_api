@@ -191,17 +191,6 @@ class UserController {
     ctx.body = users;
   }
 
-  async checkTopicExist(ctx, next) {
-    try {
-      const topic = await Topic.findById(ctx.params.id);
-      if (topic) {
-        await next();
-      }
-    } catch (err) {
-      ctx.throw(404, "话题不存在!");
-    }
-  }
-
   async followTopic(ctx) {
     const me = await User.findById(ctx.state.user._id).select(
       "+followingTopics"

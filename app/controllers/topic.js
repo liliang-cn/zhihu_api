@@ -1,4 +1,5 @@
 const Topic = require("../models/topics");
+const User = require("../models/users");
 
 class TopicController {
   async find(ctx) {
@@ -46,6 +47,20 @@ class TopicController {
     );
 
     ctx.body = topic;
+  }
+  async listFollower(ctx) {
+    const users = await User.find({ followingTopics: ctx.params.id });
+    ctx.body = users;
+  }
+  async checkTopicExist(ctx, next) {
+    try {
+      const topic = await Topic.findById(ctx.params.id);
+      if (topic) {
+        await next();
+      }
+    } catch (err) {
+      ctx.throw(404, "话题不存在!");
+    }
   }
 }
 

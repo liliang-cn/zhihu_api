@@ -18,9 +18,10 @@ const {
   unfollow,
   followTopic,
   unfollowTopic,
-  checkTopicExist,
   listFollowingTopics,
 } = require("../controllers/user");
+
+const { checkTopicExist } = require("../controllers/topic");
 
 const router = new Router({
   prefix: "/users",
