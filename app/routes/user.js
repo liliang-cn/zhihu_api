@@ -16,6 +16,10 @@ const {
   listFollowing,
   listFollower,
   unfollow,
+  followTopic,
+  unfollowTopic,
+  checkTopicExist,
+  listFollowingTopics,
 } = require("../controllers/user");
 
 const router = new Router({
@@ -43,5 +47,8 @@ router.get("/:id/following", listFollowing);
 router.get("/:id/follower", listFollower);
 router.put("/following/:id", auth, checkUserExist, follow);
 router.delete("/following/:id", auth, checkUserExist, unfollow);
+router.get("/:id/followingTopics", listFollowingTopics);
+router.put("/followingTopics/:id", auth, checkTopicExist, followTopic);
+router.delete("/followingTopics/:id", auth, checkTopicExist, unfollowTopic);
 
 module.exports = router;
