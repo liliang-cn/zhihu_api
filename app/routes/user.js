@@ -20,9 +20,19 @@ const {
   unfollowTopic,
   listFollowingTopics,
   listQuestions,
+  likeAnswer,
+  unlikeAnswer,
+  listLikingAnswers,
+  dislikeAnswer,
+  undislikeAnswer,
+  listDisLikingAnswers,
+  collectAnswer,
+  uncollectAnswer,
+  listCollectingAnswers,
 } = require("../controllers/user");
 
 const { checkTopicExist } = require("../controllers/topic");
+const { checkAnswerExist } = require("../controllers/answer");
 
 const router = new Router({
   prefix: "/users",
@@ -53,5 +63,27 @@ router.get("/:id/followingTopics", listFollowingTopics);
 router.put("/followingTopics/:id", auth, checkTopicExist, followTopic);
 router.delete("/followingTopics/:id", auth, checkTopicExist, unfollowTopic);
 router.get("/:id/questions", listQuestions);
+router.get("/:id/likingAnswers", listLikingAnswers);
+router.put(
+  "/likingAnswers/:id",
+  auth,
+  checkAnswerExist,
+  likeAnswer,
+  undislikeAnswer
+);
+router.delete("/likingAnswers/:id", auth, checkAnswerExist, unlikeAnswer);
+router.get("/:id/dislikingAnswers", listDisLikingAnswers);
+router.put(
+  "/dislikingAnswers/:id",
+  auth,
+  checkAnswerExist,
+  dislikeAnswer,
+  unlikeAnswer
+);
+router.delete("/dislikingAnswers/:id", auth, checkAnswerExist, undislikeAnswer);
+
+router.get("/:id/collecingAnswers", listCollectingAnswers);
+router.put("/collecingAnswers/:id", auth, checkAnswerExist, collectAnswer);
+router.delete("/collecingAnswers/:id", auth, checkAnswerExist, uncollectAnswer);
 
 module.exports = router;
