@@ -1,4 +1,4 @@
 module.exports = {
   secret: "mysecret",
-  connectionStr: "mongodb://localhost:27017/zhihu",
+  connectionStr: "mongodb://mongo:27017/zhihu",
 };

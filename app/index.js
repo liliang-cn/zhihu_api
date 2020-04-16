@@ -21,7 +21,9 @@ app.use(
       process.env.NODE_ENV === "production" ? rest : { stack, ...rest },
   })
 );
-app.use(logger());
+if (process.env.NODE_ENV === "prodction") {
+  app.use(logger());
+}
 app.use(
   koaBody({
     multipart: true,

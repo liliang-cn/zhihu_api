@@ -1,10 +1,13 @@
-version: "3"
+version: "3.6"
 
 services:
-  my-mongodb:
-    image: mongo
-    container_name: my-mongodb
+  web:
+    build: .
     ports:
-      - 27017:27017
-    volumes:
-      - /home/liliang/db/mongodata:/data/db
+      - "3000:3000"
+    depends_on:
+      - mongo
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
